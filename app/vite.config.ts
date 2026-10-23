@@ -389,11 +389,11 @@ function worldsPlugin(): Plugin {
 
     for (const key of Object.keys(existingSpzUrls)) {
       const assetKey = assetKeyForFilename(key)
-      const filename = worldAssetFilename(files, index, `world-${assetKey}`, new Set(['.spz']))
+      const filename = worldAssetFilename(files, index, `world-${assetKey}`, new Set(['.spz', '.ply']))
       if (filename) spzUrls[key] = worldAssetUrl(slug, filename)
     }
 
-    for (const file of indexedFiles(files, { extensions: new Set(['.spz']) })) {
+    for (const file of indexedFiles(files, { extensions: new Set(['.spz', '.ply']) })) {
       const match = file.slug.match(/^world-(100k|150k|500k|full_res)$/)
       if (!match || !WORLD_SPZ_KEYS.has(match[1])) continue
 
@@ -695,6 +695,7 @@ function worldsPlugin(): Plugin {
       server.watcher.on('unlinkDir', onWorldFsChange)
       const MIME: Record<string, string> = {
         '.spz': 'application/octet-stream',
+        '.ply': 'application/octet-stream',
         '.glb': 'model/gltf-binary',
         '.png': 'image/png',
         '.webp': 'image/webp',
