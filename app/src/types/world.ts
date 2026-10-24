@@ -50,6 +50,8 @@ export interface WorldObjectAsset {
   referenceImageUrl?: string
   thumbnailUrl?: string
   sfxUrls: string[]
+  /** keep the model's own origin (scan-registered meshes) instead of re-pivoting to bottom-center */
+  preserveOrigin?: boolean
   complete: boolean
   status?: string
 }

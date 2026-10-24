@@ -8,6 +8,11 @@ import { useAudioStore } from '../../store/audio'
 import { useSceneObjectVisual } from './useSceneObjectVisual'
 
 export const OBJECT_SCALE = 0.5
+
+/** scan-registered meshes keep true scan scale; generated objects get the shared shrink */
+export function objectBaseScale(asset: { preserveOrigin?: boolean }) {
+  return asset.preserveOrigin ? 1 : OBJECT_SCALE
+}
 const OBJECT_AUTO_ROTATE_Y_SPEED = 0.35
 
 const COLLIDER_WIREFRAME_COLOR = 0x00aaff
@@ -105,24 +110,25 @@ export const SceneObject = forwardRef<SceneObjectHandle, Props>(function SceneOb
   const usesBoxCollider = physics === 'rigidbody' || physics === 'static'
   const initialPosition = useMemo(() => new THREE.Vector3(...position), [position])
   const initialRotation = useMemo(() => new THREE.Quaternion().setFromEuler(new THREE.Euler(...rotation)), [rotation])
-  const { scene, wireframeOverlayScene, offset, size, bounds } = useSceneObjectVisual({
+  const { scene, wireframeOverlayScene, offset, localCenter, size, bounds } = useSceneObjectVisual({
     asset: object,
     renderMode,
   })
+  const baseScale = objectBaseScale(object)
   const colliderCenter = useMemo(
-    () => new THREE.Vector3(0, (size.y * OBJECT_SCALE) / 2, 0),
-    [size],
+    () => localCenter.clone().multiplyScalar(baseScale),
+    [baseScale, localCenter],
   )
   const colliderUserData = useMemo(() => ({
     [SCENE_OBJECT_INSTANCE_ID_KEY]: object.id,
   }), [object.id])
   const colliderHalfExtents = useMemo(
     () => new THREE.Vector3(
-      Math.max((size.x * OBJECT_SCALE) / 2, 0.01),
-      Math.max((size.y * OBJECT_SCALE) / 2, 0.01),
-      Math.max((size.z * OBJECT_SCALE) / 2, 0.01),
+      Math.max((size.x * baseScale) / 2, 0.01),
+      Math.max((size.y * baseScale) / 2, 0.01),
+      Math.max((size.z * baseScale) / 2, 0.01),
     ),
-    [size],
+    [baseScale, size],
   )
   const colliderWireframeMaterial = useMemo(() => new THREE.MeshBasicMaterial({
     color: COLLIDER_WIREFRAME_COLOR,
@@ -222,7 +228,7 @@ export const SceneObject = forwardRef<SceneObjectHandle, Props>(function SceneOb
   )
 
   const visualContent = (
-    <group ref={visualGroupRef} scale={[OBJECT_SCALE * scale[0], OBJECT_SCALE * scale[1], OBJECT_SCALE * scale[2]]}>
+    <group ref={visualGroupRef} scale={[baseScale * scale[0], baseScale * scale[1], baseScale * scale[2]]}>
       <primitive object={scene} position={offset} dispose={null} />
       {renderMode === ObjectRenderMode.ShadedWireframe && (
         <primitive object={wireframeOverlayScene} position={offset} dispose={null} />

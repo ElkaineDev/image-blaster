@@ -22,7 +22,7 @@ import * as THREE from 'three'
 import { AppButton } from '../../components/AppButton'
 import { ChromePanel, ChromeThumbnail, chrome } from '../../components/AppChrome'
 import { ObjectRenderMode, type WorldObjectAsset, type WorldObjectPhysics, type WorldObjectPlacement, type WorldSceneProject, type WorldSceneSun } from '../../types/world'
-import { OBJECT_SCALE } from './SceneObject'
+import { objectBaseScale } from './SceneObject'
 import { getInitialPlacements } from './placements'
 import { DROP_TARGET_LAYER } from './dropTargets'
 import { useSceneObjectVisual } from './useSceneObjectVisual'
@@ -360,20 +360,26 @@ function EditableObject({
   setRef,
 }: EditableObjectProps) {
   const activeHovered = externallyHovered
-  const { scene, wireframeOverlayScene, offset, size } = useSceneObjectVisual({
+  const { scene, wireframeOverlayScene, offset, localCenter, size } = useSceneObjectVisual({
     asset,
     renderMode,
   })
+  const baseScale = objectBaseScale(asset)
+  // bottom-center pivot for generated objects; bbox center for scan-registered ones
+  const guideOffset = useMemo(
+    () => localCenter.clone().multiplyScalar(baseScale).setY((localCenter.y - size.y / 2) * baseScale),
+    [baseScale, localCenter, size],
+  )
   const hitboxUserData = useMemo(() => ({
     [EDITABLE_OBJECT_INSTANCE_ID_KEY]: placement.instanceId,
   }), [placement.instanceId])
   const hoverGuideSize = useMemo(
     () => new THREE.Vector3(
-      Math.max(size.x * OBJECT_SCALE, 0.01),
-      Math.max(size.y * OBJECT_SCALE, 0.01),
-      Math.max(size.z * OBJECT_SCALE, 0.01),
+      Math.max(size.x * baseScale, 0.01),
+      Math.max(size.y * baseScale, 0.01),
+      Math.max(size.z * baseScale, 0.01),
     ),
-    [size],
+    [baseScale, size],
   )
 
   return (
@@ -383,15 +389,15 @@ function EditableObject({
       rotation={placement.rotation}
       scale={placement.scale}
     >
-      <group scale={OBJECT_SCALE}>
+      <group scale={baseScale}>
         <primitive object={scene} position={offset} dispose={null} />
         {renderMode === ObjectRenderMode.ShadedWireframe && (
           <primitive object={wireframeOverlayScene} position={offset} dispose={null} />
         )}
       </group>
-      {(activeHovered || selected) && <ObjectHoverGuides size={hoverGuideSize} />}
+      {(activeHovered || selected) && <group position={guideOffset}><ObjectHoverGuides size={hoverGuideSize} /></group>}
       <mesh
-        position={[0, Math.max(size.y * OBJECT_SCALE, 0.01) / 2, 0]}
+        position={[guideOffset.x, guideOffset.y + Math.max(size.y * baseScale, 0.01) / 2, guideOffset.z]}
         userData={hitboxUserData}
         onPointerOver={(event) => {
           event.stopPropagation()
@@ -408,9 +414,9 @@ function EditableObject({
         onClick={(event) => onSelect(event, placement.instanceId)}
       >
         <boxGeometry args={[
-          Math.max(size.x * OBJECT_SCALE, 0.05),
-          Math.max(size.y * OBJECT_SCALE, 0.05),
-          Math.max(size.z * OBJECT_SCALE, 0.05),
+          Math.max(size.x * baseScale, 0.05),
+          Math.max(size.y * baseScale, 0.05),
+          Math.max(size.z * baseScale, 0.05),
         ]} />
         <meshBasicMaterial
           color={0xffffff}

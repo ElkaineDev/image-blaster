@@ -205,10 +205,12 @@ function worldsPlugin(): Plugin {
         const images = indexedFiles(files, { extensions: IMAGE_EXTENSIONS })
         const objectJsonPath = path.join(objectDir, 'object.json')
         let displayName = entry.name
+        let preserveOrigin = false
         if (fs.existsSync(objectJsonPath) && fs.statSync(objectJsonPath).isFile()) {
           try {
             const json = JSON.parse(fs.readFileSync(objectJsonPath, 'utf-8'))
             displayName = json.object?.name ?? json.name ?? displayName
+            preserveOrigin = (json.object?.preserveOrigin ?? json.preserveOrigin) === true
           } catch {
             displayName = entry.name
           }
@@ -264,6 +266,7 @@ function worldsPlugin(): Plugin {
             referenceImageUrl,
             thumbnailUrl: thumbnail ? worldsUrl(slug, path.join('output', entry.name, thumbnail.name)) : referenceImageUrl,
             sfxUrls: readSfxUrls(slug, path.join('output', entry.name, 'sfx')),
+            ...(preserveOrigin ? { preserveOrigin } : {}),
             complete,
             ...(!complete && requestStatus ? { status: requestStatus } : {}),
           }

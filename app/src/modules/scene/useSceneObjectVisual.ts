@@ -31,7 +31,7 @@ export function useSceneObjectVisual({ asset, renderMode }: SceneObjectVisualArg
   const gltf = useLoader(GLTFLoader, asset.url)
   const { wireframeMaterial, shadedMaterial, wireframeOverlayMaterial } = useAssetMaterials()
 
-  const { scene, wireframeOverlayScene, offset, size, bounds, materialStates } = useMemo(() => {
+  const { scene, wireframeOverlayScene, offset, localCenter, size, bounds, materialStates } = useMemo(() => {
     const clonedScene = cloneSkeleton(gltf.scene)
     const overlayScene = cloneSkeleton(gltf.scene)
     const states: MeshMaterialState[] = []
@@ -58,15 +58,20 @@ export function useSceneObjectVisual({ asset, renderMode }: SceneObjectVisualArg
       child.raycast = ignoreRaycast
     })
 
+    const offset = asset.preserveOrigin
+      ? new THREE.Vector3()
+      : new THREE.Vector3(-center.x, -box.min.y, -center.z)
+
     return {
       scene: clonedScene,
       wireframeOverlayScene: overlayScene,
-      offset: new THREE.Vector3(-center.x, -box.min.y, -center.z),
+      offset,
+      localCenter: center.clone().add(offset),
       size,
       bounds: box.clone(),
       materialStates: states,
     }
-  }, [gltf.scene])
+  }, [gltf.scene, asset.preserveOrigin])
 
   useEffect(() => {
     wireframeOverlayScene.traverse((child) => {
@@ -107,5 +112,5 @@ export function useSceneObjectVisual({ asset, renderMode }: SceneObjectVisualArg
     }
   }, [materialStates])
 
-  return { scene, wireframeOverlayScene, offset, size, bounds }
+  return { scene, wireframeOverlayScene, offset, localCenter, size, bounds }
 }
