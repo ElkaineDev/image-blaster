@@ -1,0 +1,29 @@
+{
+  "world_id": "haus1-scaniverse-splat",
+  "display_name": "Haus1 Splat (Scaniverse)",
+  "tags": null,
+  "model": "scaniverse",
+  "assets": {
+    "mesh": {
+      "collider_mesh_url": null,
+      "hq_mesh_url": null,
+      "full_res_mesh_url": null
+    },
+    "imagery": {
+      "pano_url": null
+    },
+    "splats": {
+      "spz_urls": {
+        "full_res": "unused",
+        "500k": "unused",
+        "150k": "unused"
+      },
+      "semantics_metadata": {
+        "metric_scale_factor": 1,
+        "ground_plane_offset": 0,
+        "flip_y": false
+      }
+    },
+    "thumbnail_url": null
+  }
+}

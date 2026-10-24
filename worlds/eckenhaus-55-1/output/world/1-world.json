@@ -1,0 +1,40 @@
+{
+  "world_id": "9907d009-d6db-41ee-bbff-fec4d75dfcf1",
+  "display_name": "",
+  "tags": null,
+  "assets": {
+    "mesh": {
+      "collider_mesh_url": "https://cdn.marble.worldlabs.ai/9907d009-d6db-41ee-bbff-fec4d75dfcf1/47047e92.glb",
+      "hq_mesh_url": null,
+      "full_res_mesh_url": null
+    },
+    "imagery": {
+      "pano_url": "https://cdn.marble.worldlabs.ai/9907d009-d6db-41ee-bbff-fec4d75dfcf1/27f5f1f6-14f2-4cf2-ade6-835756681d66_panos/rgb_0.png"
+    },
+    "splats": {
+      "spz_urls": {
+        "500k": "https://cdn.marble.worldlabs.ai/9907d009-d6db-41ee-bbff-fec4d75dfcf1/da9bb3bb-bc9c-4c3b-88c8-24c265051895_ceramic_500k.spz",
+        "100k": "https://cdn.marble.worldlabs.ai/9907d009-d6db-41ee-bbff-fec4d75dfcf1/7b591ad4-b9d2-4f16-9882-bfd166d33370_dust_100k.spz",
+        "150k": "https://cdn.marble.worldlabs.ai/9907d009-d6db-41ee-bbff-fec4d75dfcf1/99d0fb09-9ff3-4fe4-b996-726781818365_ceramic_150k.spz",
+        "full_res": "https://cdn.marble.worldlabs.ai/9907d009-d6db-41ee-bbff-fec4d75dfcf1/86358b50-251e-41ae-81a8-06f57cd136ed_ceramic.spz"
+      },
+      "semantics_metadata": {
+        "metric_scale_factor": 3.1038203,
+        "ground_plane_offset": 2.3451593
+      }
+    },
+    "thumbnail_url": "https://cdn.marble.worldlabs.ai/9907d009-d6db-41ee-bbff-fec4d75dfcf1/938a8f4c-a2aa-4ddd-a605-72c857fd67bd_sand_mpi/thumbnail.webp",
+    "caption": "The scene is a realistic street-corner view in a small German half-timbered old town, presented with soft autumn daylight and a calm, orderly mood. The atmosphere feels quiet and well-kept, with traditional architecture, textured paving, and a partly cloudy sky lending a gentle historic character. A tall white corner building dominates the setting, rising four stories with a steep gabled roof, beige horizontal stripe bands, and a ground floor wrapped in natural stone cladding. Large shop windows occupy the street-level corner, displaying jewelry and decorative objects on dark shelving, while a hanging wrought-iron sign marks the small business along the narrow lane. The house number 55/1 is fixed to the pale façade near the corner, and slim windows with white shutters or roller blinds punctuate the upper floors in a regular pattern. Cobblestone paving surrounds the building on all sides, with one broader lane curving past the corner and a tighter pedestrian alley slipping between closely spaced houses. Along that narrow alley, white plaster walls and older half-timbered façades stand opposite each other, their upper stories slightly projecting and their window frames trimmed in muted wood tones. Traditional street lanterns on dark metal brackets extend from the façades, echoing the historic character of the lane and repeating at intervals toward the small opening farther along the street. At the rear of the corner building, the architecture becomes more utilitarian, with a plain side wall above the same stone-clad base, a short concrete stair, and a small retaining edge beside several wheeled recycling and refuse bins with blue, yellow, and black lids. A gravel-grid parking patch opens beside this rear façade, bordered by leafy trees and dense shrubs showing early autumn color in green with touches of rust and yellow. Across the lane, a larger half-timbered building anchors the streetscape with dark structural beams, white infill panels, and pinkish stone surrounds framing the lower windows. Farther along the old-town passage, additional compact buildings in warm peach, white, and terracotta tones close the view, their tiled roofs and shuttered windows reinforcing the intimate scale of the historic center. Overhead, the sky stretches bright and mottled with elongated white and gray clouds against patches of blue, casting even light that brings out the plaster, timber, stone, and cobble textures without harsh shadows. The 360 scene is faultless."
+  },
+  "created_at": null,
+  "updated_at": null,
+  "permission": {
+    "public": false,
+    "allowed_readers": [],
+    "allowed_writers": [],
+    "allow_id_access": false
+  },
+  "world_prompt": null,
+  "world_marble_url": "https://marble.worldlabs.ai/world/9907d009-d6db-41ee-bbff-fec4d75dfcf1",
+  "model": null
+}

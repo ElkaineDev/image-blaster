@@ -1,0 +1,9 @@
+{
+  "project": "eckenhaus-55-1",
+  "created_at": "2026-10-21T13:20:00Z",
+  "status": "in-progress",
+  "description": "Corner house 55/1 in a small German half-timbered old town, photographed from all sides plus surrounding neighborhood",
+  "source_images": ["IMG_3746", "IMG_3759", "IMG_3760", "IMG_3768", "IMG_3749", "IMG_3750", "IMG_3751", "IMG_3769"],
+  "world_model": "marble-1.1",
+  "multi_image_reconstruction": true
+}
