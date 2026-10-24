@@ -19,3 +19,10 @@ export const CHARACTER_BODY_SPAWN_POSITION: [number, number, number] = [
   CHARACTER_BODY_SPAWN.y,
   CHARACTER_BODY_SPAWN.z,
 ]
+
+export interface SpawnPoint {
+  position: [number, number, number]
+  yaw: number
+}
+
+export const DEFAULT_SPAWN_POINT: SpawnPoint = { position: CHARACTER_SPAWN_POSITION, yaw: 0 }

@@ -5,7 +5,7 @@ import { useCameraGestures } from '../camera/useCameraGestures'
 import { cameraFocusTarget } from '../camera/cameraFocus'
 import { useDebugStore } from '../../store/debug'
 import { isEditableTarget } from '../../utils/dom'
-import { CHARACTER_SPAWN } from './spawn'
+import { DEFAULT_SPAWN_POINT, type SpawnPoint } from './spawn'
 
 export interface FlyControllerHandle {
   reset: () => void
@@ -13,14 +13,13 @@ export interface FlyControllerHandle {
 
 interface FlyControllerProps {
   preserveCameraOnMount?: boolean
+  spawn?: SpawnPoint
 }
 
 const SPEED = 6
 const SHIFT_MULT = 3
 const SMOOTH = 0.12
 const DOLLY_UNITS_PER_PIXEL = 0.02
-const DEFAULT_YAW = 0
-
 const _forward = new THREE.Vector3()
 const _dollyForward = new THREE.Vector3()
 const _right = new THREE.Vector3()
@@ -28,7 +27,7 @@ const _up = new THREE.Vector3(0, 1, 0)
 const _move = new THREE.Vector3()
 const _euler = new THREE.Euler(0, 0, 0, 'YXZ')
 
-export const FlyController = forwardRef<FlyControllerHandle, FlyControllerProps>(function FlyController({ preserveCameraOnMount = false }, ref) {
+export const FlyController = forwardRef<FlyControllerHandle, FlyControllerProps>(function FlyController({ preserveCameraOnMount = false, spawn = DEFAULT_SPAWN_POINT }, ref) {
   const { camera, gl } = useThree()
   const mouseSensitivity = useDebugStore((s) => s.flyMouseSensitivity)
   const keys = useRef(new Set<string>())
@@ -38,15 +37,15 @@ export const FlyController = forwardRef<FlyControllerHandle, FlyControllerProps>
   const smoothPitch = useRef(0)
 
   const reset = useCallback(() => {
-    camera.position.set(CHARACTER_SPAWN.x, CHARACTER_SPAWN.y, CHARACTER_SPAWN.z)
+    camera.position.set(...spawn.position)
     cameraFocusTarget.current = null
     keys.current.clear()
-    rawYaw.current = DEFAULT_YAW
+    rawYaw.current = spawn.yaw
     rawPitch.current = 0
-    smoothYaw.current = DEFAULT_YAW
+    smoothYaw.current = spawn.yaw
     smoothPitch.current = 0
-    camera.quaternion.setFromEuler(_euler.set(0, DEFAULT_YAW, 0))
-  }, [camera])
+    camera.quaternion.setFromEuler(_euler.set(0, spawn.yaw, 0))
+  }, [camera, spawn])
 
   const preserveCamera = useCallback(() => {
     cameraFocusTarget.current = null

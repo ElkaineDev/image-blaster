@@ -459,6 +459,6 @@ function LoadingSpinner() {
 }
 
 function isLoadingStatus(status?: string) {
-  if (!status) return true
+  if (!status) return false
   return ['queued', 'submitted', 'running', 'processing', 'in_progress'].includes(status.toLowerCase())
 }

@@ -73,10 +73,17 @@ export interface WorldSceneSun {
   environmentIntensity?: number
 }
 
+export interface WorldSceneSpawn {
+  /** camera eye position */
+  position: Vec3Tuple
+  yaw: number
+}
+
 export interface WorldSceneProject {
   version: 1
   instances: WorldObjectPlacement[]
   sun?: WorldSceneSun
+  spawn?: WorldSceneSpawn
   metricScaleFactor?: number
   groundPlaneOffset?: number
   groundPlaneColliderEnabled?: boolean

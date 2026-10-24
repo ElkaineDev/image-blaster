@@ -540,10 +540,19 @@ function worldsPlugin(): Plugin {
       ? shadowCatcherColor.toLowerCase()
       : undefined
 
+    const spawn = (() => {
+      if (!record.spawn || typeof record.spawn !== 'object') return undefined
+      const candidate = record.spawn as Record<string, unknown>
+      if (!isVec3(candidate.position)) return undefined
+      const yaw = typeof candidate.yaw === 'number' && Number.isFinite(candidate.yaw) ? candidate.yaw : 0
+      return { position: candidate.position, yaw }
+    })()
+
     return {
       version: PROJECT_VERSION,
       instances,
       ...(sun ? { sun } : {}),
+      ...(spawn ? { spawn } : {}),
       ...(typeof metricScaleFactor === 'number' && Number.isFinite(metricScaleFactor) ? { metricScaleFactor } : {}),
       ...(typeof groundPlaneOffset === 'number' && Number.isFinite(groundPlaneOffset) ? { groundPlaneOffset } : {}),
       ...(typeof groundPlaneColliderEnabled === 'boolean' ? { groundPlaneColliderEnabled } : {}),
@@ -826,6 +835,9 @@ function worldsPlugin(): Plugin {
               res.end('Invalid project')
               return
             }
+            // the editor doesn't manage spawn; keep the one on disk
+            const existingSpawn = readSceneProject(slug)?.spawn
+            if (!project.spawn && existingSpawn) project.spawn = existingSpawn
 
             fs.mkdirSync(path.dirname(filePath), { recursive: true })
             fs.writeFileSync(filePath, `${JSON.stringify(project, null, 2)}\n`)

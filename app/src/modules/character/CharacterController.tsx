@@ -7,9 +7,9 @@ import { useDebugStore } from '../../store/debug'
 import { isEditableTarget } from '../../utils/dom'
 import {
   CAMERA_EYE_OFFSET,
-  CHARACTER_BODY_SPAWN,
-  CHARACTER_BODY_SPAWN_POSITION,
   CHARACTER_HEIGHT,
+  DEFAULT_SPAWN_POINT,
+  type SpawnPoint,
 } from './spawn'
 
 export interface CharacterControllerHandle {
@@ -23,7 +23,6 @@ const DOLLY_UNITS_PER_PIXEL = 0.01
 const CHARACTER_RADIUS = 0.25
 const CHARACTER_HALF_SEGMENT = CHARACTER_HEIGHT / 2 - CHARACTER_RADIUS
 const GROUND_CHECK_DISTANCE = CAMERA_EYE_OFFSET + 0.08
-const DEFAULT_YAW = 0
 
 const _forward = new THREE.Vector3()
 const _right = new THREE.Vector3()
@@ -31,8 +30,10 @@ const _dollyForward = new THREE.Vector3()
 const _move = new THREE.Vector3()
 const _euler = new THREE.Euler(0, 0, 0, 'YXZ')
 
-export const CharacterController = forwardRef<CharacterControllerHandle>(
-  function CharacterController(_, ref) {
+export const CharacterController = forwardRef<CharacterControllerHandle, { spawn?: SpawnPoint }>(
+  function CharacterController({ spawn = DEFAULT_SPAWN_POINT }, ref) {
+  const [spawnX, spawnY, spawnZ] = spawn.position
+  const bodySpawn = { x: spawnX, y: spawnY - CAMERA_EYE_OFFSET, z: spawnZ }
   const bodyRef = useRef<React.ComponentRef<typeof RigidBody>>(null)
   const { camera, gl } = useThree()
   const mouseSensitivity = useDebugStore((s) => s.flyMouseSensitivity)
@@ -40,9 +41,9 @@ export const CharacterController = forwardRef<CharacterControllerHandle>(
 
   const keys = useRef(new Set<string>())
   const jumpQueued = useRef(false)
-  const rawYaw = useRef(DEFAULT_YAW)
+  const rawYaw = useRef(spawn.yaw)
   const rawPitch = useRef(0)
-  const smoothYaw = useRef(DEFAULT_YAW)
+  const smoothYaw = useRef(spawn.yaw)
   const smoothPitch = useRef(0)
   const touchLook = useRef<{ id: number; x: number; y: number } | null>(null)
   const touchMove = useRef<{ id: number; x: number; y: number } | null>(null)
@@ -51,15 +52,15 @@ export const CharacterController = forwardRef<CharacterControllerHandle>(
   useImperativeHandle(ref, () => ({
     reset: () => {
       if (!bodyRef.current) return
-      bodyRef.current.setTranslation(CHARACTER_BODY_SPAWN, true)
+      bodyRef.current.setTranslation(bodySpawn, true)
       bodyRef.current.setLinvel({ x: 0, y: 0, z: 0 }, true)
       bodyRef.current.setAngvel({ x: 0, y: 0, z: 0 }, true)
-      rawYaw.current = DEFAULT_YAW
+      rawYaw.current = spawn.yaw
       rawPitch.current = 0
-      smoothYaw.current = DEFAULT_YAW
+      smoothYaw.current = spawn.yaw
       smoothPitch.current = 0
       keys.current.clear()
-      camera.quaternion.setFromEuler(_euler.set(0, DEFAULT_YAW, 0))
+      camera.quaternion.setFromEuler(_euler.set(0, spawn.yaw, 0))
     },
   }))
 
@@ -215,7 +216,7 @@ export const CharacterController = forwardRef<CharacterControllerHandle>(
   return (
     <RigidBody
       ref={bodyRef}
-      position={CHARACTER_BODY_SPAWN_POSITION}
+      position={[bodySpawn.x, bodySpawn.y, bodySpawn.z]}
       enabledRotations={[false, false, false]}
       linearDamping={0}
     >

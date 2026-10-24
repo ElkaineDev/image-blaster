@@ -237,9 +237,9 @@ export function WorldViewer({
           <AudioManager urls={worldSfxUrls} />
           <Physics key={`${desiredSlug}:${controllerResetToken}`} gravity={[0, -9.81, 0]}>
             {activeControllerMode === 'fly' ? (
-              <FlyController ref={charRef as React.RefObject<FlyControllerHandle>} preserveCameraOnMount={editing} />
+              <FlyController ref={charRef as React.RefObject<FlyControllerHandle>} preserveCameraOnMount={editing} spawn={sceneProject?.spawn} />
             ) : (
-              <CharacterController ref={charRef as React.RefObject<CharacterControllerHandle>} />
+              <CharacterController ref={charRef as React.RefObject<CharacterControllerHandle>} spawn={sceneProject?.spawn} />
             )}
             {showScene && colliderUrl && (
               <OptionalAssetBoundary label={colliderUrl} resetKey={colliderUrl}>
